@@ -125,6 +125,7 @@ func (c *applyCmd) run() error {
 			DistributionCount: 1,
 			StorageClass:      "kismatic",
 			AccessMode:        "ReadWriteOnce",
+			SkipIfExists:      true,
 		}
 		if plan.Features.HeapsterMonitoring.FeatureStorage.PersistentVolumeEnabled {
 			if err := c.executor.AddVolume(plan, v); err != nil {

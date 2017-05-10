@@ -6,5 +6,16 @@
     vars_files:
       - group_vars/all.yaml
 
+    pre_tasks:
+      - name: verify volume does not already exist  # check if volume already exists, don't fail if it does just skip
+        command: gluster volume list
+        register: out
+        run_once: true
+        when: volume_skip_if_exists is defined and volume_skip_if_exists|bool == true
+
     roles:
       - role: volume-add
+        when: >
+          volume_skip_if_exists is not defined or
+          volume_skip_if_exists is defined and volume_skip_if_exists|bool == false or
+          '{{ volume_name }}' not in out.stdout
