@@ -40,6 +40,7 @@ type installOptions struct {
 	serviceCIDR                               string
 	enableNetworkPolicy                       bool
 	heapsterMonitoringPersistentVolumeEnabled bool
+	disbaleHelm                               bool
 }
 
 func installKismaticMini(node NodeDeets, sshKey string) error {

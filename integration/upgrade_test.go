@@ -18,7 +18,7 @@ var _ = Describe("Upgrade", func() {
 			})
 			Context("Using a larger cluster layout with Ubuntu 16.04", func() {
 				ItOnAWS("should result in an upgraded cluster [slow] [upgrade]", func(aws infrastructureProvisioner) {
-					WithInfrastructureAndDNS(NodeCount{Etcd: 3, Master: 2, Worker: 2, Ingress: 0, Storage: 0}, Ubuntu1604LTS, aws, func(nodes provisionedNodes, sshKey string) {
+					WithInfrastructure(NodeCount{Etcd: 3, Master: 2, Worker: 2, Ingress: 0, Storage: 0}, Ubuntu1604LTS, aws, func(nodes provisionedNodes, sshKey string) {
 						installAndUpgrade(nodes, sshKey)
 					})
 				})
@@ -75,7 +75,7 @@ var _ = Describe("Upgrade", func() {
 						nodes.worker = allWorkers[0 : len(nodes.worker)-1]
 
 						// Standup cluster with previous version
-						opts := installOptions{allowPackageInstallation: true, enableNetworkPolicy: true}
+						opts := installOptions{allowPackageInstallation: true, enableNetworkPolicy: true, disbaleHelm: true}
 						err := installKismatic(nodes, opts, sshKey)
 						FailIfError(err)
 

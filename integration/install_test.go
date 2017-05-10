@@ -172,6 +172,7 @@ var _ = Describe("kismatic", func() {
 						allowPackageInstallation:                  true,
 						enableNetworkPolicy:                       true,
 						heapsterMonitoringPersistentVolumeEnabled: true,
+						disbaleHelm:                               true,
 					}
 					err := installKismatic(nodes, installOpts, sshKey)
 					Expect(err).ToNot(HaveOccurred())

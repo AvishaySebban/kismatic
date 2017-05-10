@@ -26,6 +26,7 @@ type PlanAWS struct {
 	UseDirectLVM                              bool
 	ServiceCIDR                               string
 	EnableNetworkPolicy                       bool
+	DisableHelm                               bool
 	HeapsterMonitoringPersistentVolumeEnabled bool
 }
 
@@ -62,7 +63,7 @@ docker_registry:
   CA: {{.DockerRegistryCAPath}}
 features:
   package_manager:
-    enabled: true
+    enabled: {{if .DisableHelm}}false{{else}}true{{end}}
     provider: helm
   heapster_monitoring:
     enabled: true
