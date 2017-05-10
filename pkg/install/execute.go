@@ -730,12 +730,12 @@ func (ae *ansibleExecutor) buildClusterCatalog(p *Plan) (*ansible.ClusterCatalog
 	// HeapsterMonitoring
 	cc.HeapsterMonitoringEnabled = p.Features.HeapsterMonitoring.Enabled
 	// If PVC path is provided dont create the PV
-	cc.HeapsterMonitoringPersistentVolumeEnabled = p.Features.HeapsterMonitoring.Storage.PersistentVolumeEnabled && p.Features.HeapsterMonitoring.Storage.PersistentVolumeClaimPath == ""
+	cc.HeapsterMonitoringPersistentVolumeEnabled = p.Features.HeapsterMonitoring.Storage.PersistentVolumeEnabled && p.Features.HeapsterMonitoring.Storage.PersistentVolumeClaimName == ""
 	cc.HeapsterMonitoringVolumeSize = p.Features.HeapsterMonitoring.Storage.VolumeSize
 	if p.Features.HeapsterMonitoring.Storage.VolumeSize == 0 {
 		cc.HeapsterMonitoringVolumeSize = 10
 	}
-	cc.HeapsterPersistentVolumeClaimPath = p.Features.HeapsterMonitoring.Storage.PersistentVolumeClaimPath
+	cc.HeapsterPersistentVolumeClaimName = p.Features.HeapsterMonitoring.Storage.PersistentVolumeClaimName
 
 	return &cc, nil
 }

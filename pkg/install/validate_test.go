@@ -839,6 +839,4 @@ func TestHeapsterMonitoring(t *testing.T) {
 	p.Storage = OptionalNodeGroup{}
 	p.NFS = NFS{}
 	assertInvalidPlan(t, p)
-	p.Features.HeapsterMonitoring.Storage.PersistentVolumeClaimPath = "/tmp/fake.yaml"
-	assertInvalidPlan(t, p)
 }

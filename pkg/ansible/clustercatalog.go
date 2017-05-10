@@ -76,7 +76,7 @@ type ClusterCatalog struct {
 	HeapsterMonitoringEnabled                 bool   `yaml:"heapster_monitoring_enabled"`
 	HeapsterMonitoringVolumeSize              int    `yaml:"heapster_monitoring_volume_size"`
 	HeapsterMonitoringPersistentVolumeEnabled bool   `yaml:"heapster_monitoring_persistent_volume_enabled"`
-	HeapsterPersistentVolumeClaimPath         string `yaml:"heapster_monitoring_persistent_volume_claim_path,omitempty"`
+	HeapsterPersistentVolumeClaimName         string `yaml:"heapster_monitoring_persistent_volume_claim_name,omitempty"`
 }
 
 type NFSVolume struct {

@@ -6,9 +6,12 @@
 
   - name: copy pvc spec to remote
     template:
-      src: "{% if heapster_monitoring_persistent_volume_claim_path is defined and heapster_monitoring_persistent_volume_claim_path != '' %}{{ heapster_monitoring_persistent_volume_claim_path }}{% else %}pvc.yaml{% endif %}"
+      src: "pvc.yaml"
       dest: "{{ kubernetes_spec_dir }}/heapster-pvc.yaml"
-    when: heapster_monitoring_persistent_volume_enabled|bool == true
+    when: >
+      heapster_monitoring_persistent_volume_enabled|bool == true and
+      (heapster_monitoring_persistent_volume_claim_name is not defined or
+      heapster_monitoring_persistent_volume_claim_name == '')
   - name: copy heapster-rbac.yaml to remote
     template:
       src: heapster-rbac.yaml
@@ -24,7 +27,10 @@
 
   - name: create heapster pvc
     command: kubectl apply -f {{ kubernetes_spec_dir }}/heapster-pvc.yaml
-    when: heapster_monitoring_persistent_volume_enabled|bool == true
+    when: >
+      heapster_monitoring_persistent_volume_enabled|bool == true and
+      (heapster_monitoring_persistent_volume_claim_name is not defined or
+      heapster_monitoring_persistent_volume_claim_name == '')
   - name: create heapster rolebinding
     command: kubectl apply -f {{ kubernetes_spec_dir }}/heapster-rbac.yaml
   - name: start influxdb controller
@@ -32,6 +38,6 @@
   - name: start heapster controller
     command: kubectl apply -f {{ kubernetes_spec_dir }}/heapster.yaml
 
-  - name: validate heapster pods
+  - name: validate heapster pods  # don't verify if user is going to create their own PVC/PV
     include: validate.yaml
-    when: heapster_monitoring_persistent_volume_claim_path is not defined or heapster_monitoring_persistent_volume_claim_path == ''
+    when: heapster_monitoring_persistent_volume_claim_name is not defined or heapster_monitoring_persistent_volume_claim_name == ''

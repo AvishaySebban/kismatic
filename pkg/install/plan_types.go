@@ -160,7 +160,7 @@ type HeapsterMonitoring struct {
 type HeapsterStorage struct {
 	VolumeSize                int    `yaml:"volume_size"`
 	PersistentVolumeEnabled   bool   `yaml:"persistent_volume_enabled"`
-	PersistentVolumeClaimPath string `yaml:"persistent_volume_claim_path"`
+	PersistentVolumeClaimName string `yaml:"persistent_volume_claim"`
 }
 
 // GetUniqueNodes returns a list of the unique nodes that are listed in the plan file.

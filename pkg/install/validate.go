@@ -227,7 +227,7 @@ func (s *SSHConfig) validate() (bool, []error) {
 func (f *Features) validate() (bool, []error) {
 	v := newValidator()
 	v.validate(&f.PackageManager)
-	v.validate(&f.HeapsterMonitoring)
+	//v.validate(&f.HeapsterMonitoring)
 	return v.valid()
 }
 
@@ -235,20 +235,6 @@ func (p *PackageManager) validate() (bool, []error) {
 	v := newValidator()
 	if p.Enabled && p.Provider != "helm" {
 		v.addError(fmt.Errorf("Package Manager valid options are: 'helm'"))
-	}
-	return v.valid()
-}
-
-func (h *HeapsterMonitoring) validate() (bool, []error) {
-	v := newValidator()
-	if h.Storage.PersistentVolumeClaimPath != "" {
-		pvc := h.Storage.PersistentVolumeClaimPath
-		if _, err := os.Stat(pvc); os.IsNotExist(err) {
-			v.addError(fmt.Errorf("Heapster persistent volume file was not found at %q", pvc))
-		}
-		if !filepath.IsAbs(pvc) {
-			v.addError(errors.New("Path to the heapster persistent volume must be absolute"))
-		}
 	}
 	return v.valid()
 }
