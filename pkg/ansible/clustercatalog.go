@@ -73,9 +73,10 @@ type ClusterCatalog struct {
 	LocalKubeconfigDirectory string `yaml:"local_kubeconfig_directory"`
 
 	// heapster
-	HeapsterMonitoringEnabled                 bool `yaml:"heapster_monitoring_enabled"`
-	HeapsterVolumeSize                        int  `yaml:"heapster_monitoring_volume_size"`
-	HeapsterMonitoringPersistentVolumeEnabled bool `yaml:"heapster_monitoring_persistent_volume_enabled"`
+	HeapsterMonitoringEnabled                 bool   `yaml:"heapster_monitoring_enabled"`
+	HeapsterMonitoringVolumeSize              int    `yaml:"heapster_monitoring_volume_size"`
+	HeapsterMonitoringPersistentVolumeEnabled bool   `yaml:"heapster_monitoring_persistent_volume_enabled"`
+	HeapsterPersistentVolumeClaimPath         string `yaml:"heapster_monitoring_persistent_volume_claim_path,omitempty"`
 }
 
 type NFSVolume struct {

@@ -119,7 +119,8 @@ func (c *applyCmd) run() error {
 	if plan.Features.HeapsterMonitoring.Enabled {
 		util.PrintHeader(c.out, "Installing Heapster Addon on the Cluster", '=')
 		// Use Gluster cluster or NFS volume, fallback to hostPath
-		if plan.Features.HeapsterMonitoring.Storage.PersistentVolumeEnabled {
+		// If user provided a path to PVC don't create a volume
+		if plan.Features.HeapsterMonitoring.Storage.PersistentVolumeEnabled && plan.Features.HeapsterMonitoring.Storage.PersistentVolumeClaimPath == "" {
 			// Use Gluster cluster volumes if the only persistent provider, else assume an NFS volume is created
 			if len(plan.Storage.Nodes) > 0 && len(plan.NFS.Volumes) == 0 {
 				v := install.StorageVolume{

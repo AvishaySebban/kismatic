@@ -8,7 +8,14 @@
     template:
       src: hostpath-pv.yaml
       dest: "{{ kubernetes_spec_dir }}/heapster-pv.yaml"
-    when: "heapster_monitoring_persistent_volume_enabled|bool == false"
+    when: >
+      heapster_monitoring_persistent_volume_enabled|bool == false and
+      (heapster_monitoring_persistent_volume_claim_path is not defined or
+      heapster_monitoring_persistent_volume_claim_path == '')
+  - name: copy pvc spec to remote
+    template:
+      src: "{% if heapster_monitoring_persistent_volume_claim_path is defined and heapster_monitoring_persistent_volume_claim_path != '' %}{{ heapster_monitoring_persistent_volume_claim_path }}{% else %}pvc.yaml{% endif %}"
+      dest: "{{ kubernetes_spec_dir }}/heapster-pvc.yaml"
   - name: copy heapster-rbac.yaml to remote
     template:
       src: heapster-rbac.yaml
@@ -24,7 +31,12 @@
 
   - name: create heapster hostPath volume
     command: kubectl apply -f {{ kubernetes_spec_dir }}/heapster-pv.yaml
-    when: "heapster_monitoring_persistent_volume_enabled|bool == false"
+    when: >
+      heapster_monitoring_persistent_volume_enabled|bool == false and
+      (heapster_monitoring_persistent_volume_claim_path is not defined or
+      heapster_monitoring_persistent_volume_claim_path == '')
+  - name: create heapster pvc
+    command: kubectl apply -f {{ kubernetes_spec_dir }}/heapster-pvc.yaml
   - name: create heapster rolebinding
     command: kubectl apply -f {{ kubernetes_spec_dir }}/heapster-rbac.yaml
   - name: start influxdb controller
@@ -32,26 +44,6 @@
   - name: start heapster controller
     command: kubectl apply -f {{ kubernetes_spec_dir }}/heapster.yaml
 
-  - name: wait until the influxdb pods are ready
-    command: kubectl get deployment heapster-influxdb -n kube-system -o jsonpath='{.status.availableReplicas}'
-    register: readyReplicas
-    until: readyReplicas.stdout|int == {{ monitoring_influxdb_replicas }}
-    retries: 24
-    delay: 10
-    failed_when: false # We don't want this task to actually fail (We catch the failure with a custom msg in the next task)
-  - name: fail if the tiller pod is not ready
-    fail:
-      msg: "Timed out waiting for the influxdb pods to be in the ready state."
-    when: readyReplicas.stdout|int != {{ monitoring_influxdb_replicas }}
-
-  - name: wait until the heapster pods are ready
-    command: kubectl get deployment heapster -n kube-system -o jsonpath='{.status.availableReplicas}'
-    register: readyReplicas
-    until: readyReplicas.stdout|int == {{ heapster_replcias }}
-    retries: 24
-    delay: 10
-    failed_when: false # We don't want this task to actually fail (We catch the failure with a custom msg in the next task)
-  - name: fail if the tiller pod is not ready
-    fail:
-      msg: "Timed out waiting for the heapster pods to be in the ready state."
-    when: readyReplicas.stdout|int != {{ heapster_replcias }}
+  - name: validate heapster pods
+    include: validate.yaml
+    when: heapster_monitoring_persistent_volume_claim_path is not defined or heapster_monitoring_persistent_volume_claim_path == ''

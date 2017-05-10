@@ -13,20 +13,6 @@ spec:
   selector:
     k8s-app: influxdb
 ---
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: heapster-influxdb
-  namespace: kube-system
-  annotations:
-    volume.beta.kubernetes.io/storage-class: "kismatic"
-spec:
-  accessModes:
-    - {% if heapster_monitoring_persistent_volume_enabled == true %}ReadWriteMany{% else %}ReadWriteOnce{% endif %}}
-  resources:
-    requests:
-      storage: {{ heapster_monitoring_volume_size }}Gi
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
