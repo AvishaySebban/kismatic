@@ -120,14 +120,14 @@ func (c *applyCmd) run() error {
 		util.PrintHeader(c.out, "Installing Heapster Addon on the Cluster", '=')
 		v := install.StorageVolume{
 			Name:              "heapster-influxdb",
-			SizeGB:            10,
+			SizeGB:            plan.Features.HeapsterMonitoring.Storage.VolumeSize,
 			ReplicateCount:    1,
 			DistributionCount: 1,
 			StorageClass:      "kismatic",
 			AccessMode:        "ReadWriteOnce",
 			SkipIfExists:      true,
 		}
-		if plan.Features.HeapsterMonitoring.FeatureStorage.PersistentVolumeEnabled {
+		if plan.Features.HeapsterMonitoring.Storage.PersistentVolumeEnabled {
 			if err := c.executor.AddVolume(plan, v); err != nil {
 				return fmt.Errorf("error creating heapster volume: %v", err)
 			}

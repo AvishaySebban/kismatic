@@ -25,7 +25,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
+      storage: {{ heapster_monitoring_volume_size }}Gi
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment

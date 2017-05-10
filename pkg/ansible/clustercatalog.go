@@ -75,6 +75,7 @@ type ClusterCatalog struct {
 
 	// heapster
 	HeapsterMonitoringEnabled                 bool `yaml:"heapster_monitoring_enabled"`
+	HeapsterVolumeSize                        int  `yaml:"heapster_monitoring_volume_size"`
 	HeapsterMonitoringPersistentVolumeEnabled bool `yaml:"heapster_monitoring_persistent_volume_enabled"`
 }
 

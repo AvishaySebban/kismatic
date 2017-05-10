@@ -6,7 +6,7 @@ metadata:
     volume.beta.kubernetes.io/storage-class: "kismatic"
 spec:
   capacity:
-    storage: 10Gi
+    storage: {{ heapster_monitoring_volume_size }}Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
