@@ -4,18 +4,11 @@
       path: "{{ kubernetes_spec_dir }}"
       state: directory
 
-  - name: copy hostpath-pv.yaml to remote
-    template:
-      src: hostpath-pv.yaml
-      dest: "{{ kubernetes_spec_dir }}/heapster-pv.yaml"
-    when: >
-      heapster_monitoring_persistent_volume_enabled|bool == false and
-      (heapster_monitoring_persistent_volume_claim_path is not defined or
-      heapster_monitoring_persistent_volume_claim_path == '')
   - name: copy pvc spec to remote
     template:
       src: "{% if heapster_monitoring_persistent_volume_claim_path is defined and heapster_monitoring_persistent_volume_claim_path != '' %}{{ heapster_monitoring_persistent_volume_claim_path }}{% else %}pvc.yaml{% endif %}"
       dest: "{{ kubernetes_spec_dir }}/heapster-pvc.yaml"
+    when: heapster_monitoring_persistent_volume_enabled|bool == true
   - name: copy heapster-rbac.yaml to remote
     template:
       src: heapster-rbac.yaml
@@ -29,14 +22,9 @@
       src: heapster.yaml
       dest: "{{ kubernetes_spec_dir }}/heapster.yaml"
 
-  - name: create heapster hostPath volume
-    command: kubectl apply -f {{ kubernetes_spec_dir }}/heapster-pv.yaml
-    when: >
-      heapster_monitoring_persistent_volume_enabled|bool == false and
-      (heapster_monitoring_persistent_volume_claim_path is not defined or
-      heapster_monitoring_persistent_volume_claim_path == '')
   - name: create heapster pvc
     command: kubectl apply -f {{ kubernetes_spec_dir }}/heapster-pvc.yaml
+    when: heapster_monitoring_persistent_volume_enabled|bool == true
   - name: create heapster rolebinding
     command: kubectl apply -f {{ kubernetes_spec_dir }}/heapster-rbac.yaml
   - name: start influxdb controller

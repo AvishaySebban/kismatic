@@ -36,5 +36,9 @@ spec:
           name: influxdb-storage
       volumes:
       - name: influxdb-storage
+{% if heapster_monitoring_persistent_volume_enabled == true %}
         persistentVolumeClaim:
           claimName: heapster-influxdb
+{% else %}
+        emptyDir: {}
+{% endif %}
