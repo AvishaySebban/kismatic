@@ -837,5 +837,6 @@ func TestHeapsterMonitoring(t *testing.T) {
 	p.Features.HeapsterMonitoring.Enabled = true
 	p.Features.HeapsterMonitoring.Storage.PersistentVolumeEnabled = true
 	p.Storage = OptionalNodeGroup{}
+	p.NFS = NFS{}
 	assertInvalidPlan(t, p)
 }

@@ -397,10 +397,6 @@ func (ae *ansibleExecutor) AddVolume(plan *Plan, volume StorageVolume) error {
 	cc.VolumeQuotaBytes = volume.SizeGB * (1 << (10 * 3))
 	cc.VolumeMount = "/"
 	cc.VolumeAllowedIPs = volumeAllowedIPs(plan, volume.AllowAddresses...)
-	cc.VolumeAccessMode = "ReadWriteMany"
-	if volume.AccessMode != "" {
-		cc.VolumeAccessMode = volume.AccessMode
-	}
 	cc.VolumeSkipIfExists = volume.SkipIfExists
 
 	t := task{

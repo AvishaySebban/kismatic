@@ -22,7 +22,7 @@ metadata:
     volume.beta.kubernetes.io/storage-class: "kismatic"
 spec:
   accessModes:
-    - ReadWriteOnce
+    - {% if heapster_monitoring_persistent_volume_enabled == true %}ReadWriteMany{% else %}ReadWriteOnce{% endif %}}
   resources:
     requests:
       storage: {{ heapster_monitoring_volume_size }}Gi

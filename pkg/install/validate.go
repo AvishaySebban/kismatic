@@ -134,9 +134,9 @@ func (p *Plan) validate() (bool, []error) {
 	// validate features that are dependent on storage
 	v.validate(&p.Features)
 	if p.Features.HeapsterMonitoring.Enabled {
-		// cannot use a PV when relying on storage nodes and storage nodes are not defined in the plan
-		if p.Features.HeapsterMonitoring.Storage.PersistentVolumeEnabled && len(p.Storage.Nodes) == 0 {
-			v.addError(errors.New("Heapster monitoring cannot use a persistent volume without any storage nodes"))
+		// cannot use a PV when relying on persistent volumes and storage nodes or NFS are not defined in the plan
+		if p.Features.HeapsterMonitoring.Storage.PersistentVolumeEnabled && (len(p.Storage.Nodes) == 0 && len(p.NFS.Volumes) == 0) {
+			v.addError(errors.New("Heapster monitoring cannot use a persistent volume without any storage nodes or NFS"))
 		}
 	}
 	v.validateWithErrPrefix("Etcd nodes", &p.Etcd)

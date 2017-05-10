@@ -118,18 +118,21 @@ func (c *applyCmd) run() error {
 	// Heapster
 	if plan.Features.HeapsterMonitoring.Enabled {
 		util.PrintHeader(c.out, "Installing Heapster Addon on the Cluster", '=')
-		v := install.StorageVolume{
-			Name:              "heapster-influxdb",
-			SizeGB:            plan.Features.HeapsterMonitoring.Storage.VolumeSize,
-			ReplicateCount:    1,
-			DistributionCount: 1,
-			StorageClass:      "kismatic",
-			AccessMode:        "ReadWriteOnce",
-			SkipIfExists:      true,
-		}
+		// Use Gluster cluster or NFS volume, fallback to hostPath
 		if plan.Features.HeapsterMonitoring.Storage.PersistentVolumeEnabled {
-			if err := c.executor.AddVolume(plan, v); err != nil {
-				return fmt.Errorf("error creating heapster volume: %v", err)
+			// Use Gluster cluster volumes if the only persistent provider, else assume an NFS volume is created
+			if len(plan.Storage.Nodes) > 0 && len(plan.NFS.Volumes) == 0 {
+				v := install.StorageVolume{
+					Name:              "heapster-influxdb",
+					SizeGB:            plan.Features.HeapsterMonitoring.Storage.VolumeSize,
+					ReplicateCount:    1,
+					DistributionCount: 1,
+					StorageClass:      "kismatic",
+					SkipIfExists:      true,
+				}
+				if err := c.executor.AddVolume(plan, v); err != nil {
+					return fmt.Errorf("error creating heapster volume: %v", err)
+				}
 			}
 		}
 		if err := c.executor.RunPlay("_heapster.yaml", plan); err != nil {
